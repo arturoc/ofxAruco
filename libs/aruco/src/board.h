@@ -15,7 +15,7 @@ class BoardConfiguration
 public:
     cv::Mat _markersId;// grid of marker ids. Represent the matrix of (integers) markers in the board
     int _markerSizePix, _markerDistancePix;//size in pixels of the marker side and the distance between markers
-
+	cv::Size size;
   /**
     */
     BoardConfiguration();

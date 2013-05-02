@@ -4,7 +4,7 @@ using namespace std;
 using namespace cv;
 namespace aruco {
 
-cv::Mat Board::createBoardImage( Size gridSize,int MarkerSize,int MarkerDistance,unsigned int FirstMarkerID, BoardConfiguration& TInfo  ) throw (cv::Exception)
+	cv::Mat Board::createBoardImage( cv::Size gridSize,int MarkerSize,int MarkerDistance,unsigned int FirstMarkerID, BoardConfiguration& TInfo  ) throw (cv::Exception)
 {
 
     vector<vector<int> > MarkersIds;
@@ -33,7 +33,7 @@ cv::Mat Board::createBoardImage( Size gridSize,int MarkerSize,int MarkerDistance
     tableImage.setTo(Scalar(255));
     for (int y=0;y<gridSize.height;y++)
         for (int x=0;x<gridSize.width;x++) {
-            Mat subrect(tableImage,Rect( x*(MarkerDistance+MarkerSize),y*(MarkerDistance+MarkerSize),MarkerSize,MarkerSize));
+            Mat subrect(tableImage,cv::Rect( x*(MarkerDistance+MarkerSize),y*(MarkerDistance+MarkerSize),MarkerSize,MarkerSize));
             Mat marker=Marker::createMarkerImage( TInfo._markersId.at<int>(y,x),MarkerSize);
             marker.copyTo(subrect);
         }
@@ -89,7 +89,7 @@ void BoardConfiguration::readFromFile(string sfile)throw (cv::Exception)
     file>>sig>>ver;
     if (sig!="ArucoBoard") throw cv::Exception(9191,"Invalid file type :"+sfile,"BoardConfiguration::readFromFile",__FILE__,__LINE__);
     if (ver!="1.0") throw cv::Exception(9191,"Invalid file version :"+sfile,"BoardConfiguration::readFromFile",__FILE__,__LINE__);
-    Size size;
+	
     file>>size.height>>size.width;//read size
     _markersId.create(size,CV_32SC1);
     for (  int i=0;i<size.height;i++)

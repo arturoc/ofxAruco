@@ -93,7 +93,7 @@ void Marker::draw(Mat &in, Scalar color, int lineWidth ,bool writeId)
         char cad[100];
         sprintf(cad,"id=%d",id);
         //determine the centroid
-        Point cent(0,0);
+		cv::Point cent(0,0);
         for (int i=0;i<4;i++)
         {
             cent.x+=(*this)[i].x;
@@ -195,7 +195,7 @@ Mat Marker::createMarkerImage(int id,int size) throw (cv::Exception)
         int index=(id>>2*(4-y)) & 0x0003;
         int val=ids[index];
         for (int x=0;x<5;x++) {
-            Mat roi=marker(Rect((x+1)* swidth,(y+1)* swidth,swidth,swidth));
+            Mat roi=marker(cv::Rect((x+1)* swidth,(y+1)* swidth,swidth,swidth));
             if ( ( val>>(4-x) ) & 0x0001 ) roi.setTo(Scalar(255));
             else roi.setTo(Scalar(0));
         }

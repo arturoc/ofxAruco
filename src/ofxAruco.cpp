@@ -5,8 +5,8 @@
  *      Author: arturo
  */
 
-#include "ofxAruco.h"
 #include "ofxCv.h"
+#include "ofxAruco.h"
 
 ofxAruco::ofxAruco() {
 

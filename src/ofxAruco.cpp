@@ -71,9 +71,9 @@ aruco::BoardConfiguration & ofxAruco::getBoardConfig(){
 }
 
 aruco::Marker * ofxAruco::findMarker(int id){
-	for(int i=0;i<markers.size();i++){
-		if(markers[i].id==id){
-			return &markers[i];
+	for(size_t i=0;i<backMarkers.size();i++){
+		if(backMarkers[i].idMarker==id){
+			return &backMarkers[i];
 		}
 	}
 	return NULL;
@@ -81,8 +81,8 @@ aruco::Marker * ofxAruco::findMarker(int id){
 
 
 ofxAruco::TrackedMarker * ofxAruco::findTrackedMarker(int id){
-	for(int i=0;i<prevMarkers.size();i++){
-		if(prevMarkers[i].marker.id==id){
+	for(size_t i=0;i<prevMarkers.size();i++){
+		if(prevMarkers[i].marker.idMarker==id){
 			return &prevMarkers[i];
 		}
 	}
@@ -135,7 +135,7 @@ void ofxAruco::findMarkers(ofPixels & pixels){
 			toDelete.push_back(prevMarkers.begin()+i);
 			continue;
 		}
-		aruco::Marker * prev = findMarker(prevMarkers[i].marker.id);
+		aruco::Marker * prev = findMarker(prevMarkers[i].marker.idMarker);
 		if(!prev){
 			prevMarkers[i].age++;
 			toAdd.push_back(prevMarkers[i].marker);
@@ -149,7 +149,7 @@ void ofxAruco::findMarkers(ofPixels & pixels){
 	}
 
 	for(size_t i=0;i<backMarkers.size();i++){
-		TrackedMarker * marker = findTrackedMarker(backMarkers[i].id);
+		TrackedMarker * marker = findTrackedMarker(backMarkers[i].idMarker);
 		if(!marker){
 			TrackedMarker tracked = {backMarkers[i],0};
 			prevMarkers.push_back(tracked);

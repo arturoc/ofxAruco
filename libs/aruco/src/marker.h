@@ -14,7 +14,7 @@ class Marker: public std::vector<cv::Point2f>
 {
 public:
     //id of  the marker
-    int id;
+    int idMarker;
     //size of the markers sides in meters
     float ssize;
     //matrices of rotation and translation respect to the camera
@@ -31,7 +31,7 @@ public:
     ~Marker() {}
     /**Indicates if this object is valid
      */
-    bool isValid()const{return id!=-1 && size()==4;}
+    bool isValid()const{return idMarker!=-1 && size()==4;}
 
     /**Draws this marker in the input image
      */
@@ -58,13 +58,13 @@ public:
      */
     friend bool operator<(const Marker &M1,const Marker&M2)
     {
-        return M1.id<M2.id;
+        return M1.idMarker<M2.idMarker;
     }
     /**
      */
     friend ostream & operator<<(ostream &str,const Marker &M)
     {
-        str<<M.id<<"=";
+        str<<M.idMarker<<"=";
         for (int i=0;i<4;i++)
             str<<"("<<M[i].x<< ","<<M[i].y<<") ";
         str<<"Txyz=";

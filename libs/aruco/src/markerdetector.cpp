@@ -171,7 +171,7 @@ void MarkerDetector::detect(Mat &input,vector<Marker> &detectedMarkers,Mat camMa
             if (id!=-1)
             {
                 detectedMarkers.push_back(MarkerCanditates[i]);
-                detectedMarkers.back().id=id;
+                detectedMarkers.back().idMarker=id;
                 //sort the points so that they are always in the same order no matter the camera orientation
                 std::rotate(detectedMarkers.back().begin(),detectedMarkers.back().begin()+4-nRotations,detectedMarkers.back().end());
             }
@@ -200,7 +200,7 @@ void MarkerDetector::detect(Mat &input,vector<Marker> &detectedMarkers,Mat camMa
     for (unsigned int i=0;i<detectedMarkers.size();i++) toRemove[i]=false;
 
     for (int i=0;i<int(detectedMarkers.size())-1;i++) {
-        if (detectedMarkers[i].id==detectedMarkers[i+1].id && !toRemove[i+1] ) {
+        if (detectedMarkers[i].idMarker==detectedMarkers[i+1].idMarker && !toRemove[i+1] ) {
             //deletes the one with smaller perimeter
             if (perimeter(detectedMarkers[i])>perimeter(detectedMarkers[i+1])) toRemove[i+1]=true;
             else toRemove[i]=true;

@@ -7,7 +7,7 @@ namespace aruco {
  */
 Marker::Marker()
 {
-    id=-1;
+    idMarker=-1;
     ssize=-1;
     Rvec.create(3,1,CV_32FC1);
     Tvec.create(3,1,CV_32FC1);
@@ -21,7 +21,7 @@ Marker::Marker(const Marker &M):std::vector<cv::Point2f>(M)
 {
     M.Rvec.copyTo(Rvec);
     M.Tvec.copyTo(Tvec);
-    id=M.id;
+    idMarker=M.idMarker;
     ssize=M.ssize;
 }
 /**
@@ -91,7 +91,7 @@ void Marker::draw(Mat &in, Scalar color, int lineWidth ,bool writeId)
     cv::rectangle( in,(*this)[2]-Point2f(2,2),(*this)[2]+Point2f(2,2),Scalar(255,0,0),lineWidth,CV_AA);
     if (writeId) {
         char cad[100];
-        sprintf(cad,"id=%d",id);
+        sprintf(cad,"id=%d",idMarker);
         //determine the centroid
 		cv::Point cent(0,0);
         for (int i=0;i<4;i++)

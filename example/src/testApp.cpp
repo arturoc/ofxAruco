@@ -19,7 +19,7 @@ void drawMarker(float size, const ofColor & color){
 //--------------------------------------------------------------
 void testApp::setup(){
 	ofSetVerticalSync(true);
-	useVideo = true;
+	useVideo = false;
 	string boardName = "boardinfo.abc";
 
 	if(useVideo){
@@ -27,6 +27,7 @@ void testApp::setup(){
 		player.play();
 		video = &player;
 	}else{
+		grabber.setDeviceID(1);
 		grabber.initGrabber(640,480);
 		video = &grabber;
 	}

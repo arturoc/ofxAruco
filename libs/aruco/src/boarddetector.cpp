@@ -27,7 +27,7 @@ float BoardDetector::detect(const vector<Marker> &detectedMarkers,const  BoardCo
     int nMarkInBoard=0;//total number of markers detected
     for (unsigned int i=0;i<detectedMarkers.size();i++) {
         bool found=false;
-        int id=detectedMarkers[i].id;
+        int id=detectedMarkers[i].idMarker;
         //find it
         for (  int j=0;j<detected.size().height && ! found;j++)
             for (  int k=0;k<detected.size().width && ! found;k++)

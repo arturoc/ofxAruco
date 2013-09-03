@@ -1,0 +1,56 @@
+ArUco: Augmented Reality library from the University of Cordoba
+-------------------------------------------------------------------
+
+
+ArUco is a minimal C++ library for detection of Augmented Reality markers based on OpenCv exclusively.  
+
+It is an educational project to show student how to detect augmented reality markers and it is provided under BSD license.
+
+
+INTRODUCTION
+
+The library relies on the use of coded markers. Each marker has an unique code indicated by the black and white
+colors in it. The libary detect borders, and analyzes into the rectangular regions which of them are likely to be markers.
+Then, a decoding is performed and if the code is valid, it is considered that the rectangle is a marker.
+
+The codification included into the marker is a slighly modified version of the Hamming Code. It has a total a 25 bits didived in
+5 rows of 5 bits each. So, we have 5 words of 5 bits. Each word, contains only 2 bits of real information, the rest is for 
+and error detection/correction (error correction is yet to be done). As a conclusion, a marker contains 10 bits of real 
+information wich allows 1024 different markers.
+
+
+The library comes with three applications:
+ -aruco_create_marker: which creates marker and saves it in a jpg file you can print.
+ -aruco_test: this is the main application for detection. It reads images either from the camera of from a video and detect markers.
+               Additionally, if you provide the intrinsics of the camera(obtained by OpenCv calibration) and the size of the marker in meters,
+	       the library calculates the marker intrinsics so that you can easily create your AR applications.
+ -aruco_test_gl: shows how to use the library AR applications using OpenGL for rendering
+
+LIBRARY DESCRIPTION:
+
+Thea ArUco library is contained in two files: aruco.cpo and aruco.h 
+
+They contain two classes:
+   - Marker: which represent a marker detected in the image
+   - ArMarkerDetector: that is in charge of deteting the markers in a image
+Detection is done by simple calling the member funcion ArMarkerDetector::detect()
+
+Additionally, the classes contain members to create the required matrices for rendering using OpenGL. See aruco_test_gl for details
+
+
+
+
+COMPILING:
+For creating aruco_create_marker and  aruco_test simply type
+> make
+For creating aruco_test_gl type
+>make aruco_test_gl
+
+The makefile is only prepared for linux. However, the library should compile in Windows too.
+
+REQUIREMENTS: OpenCv >= 2.1.0. and OpenGL for (aruco_test_gl)
+
+CONTACT: Rafael Munoz-Salinas: rmsalinas@uco.es
+
+FINAL NOTE: this libary is free software and come with no guaratee!
+

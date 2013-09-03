@@ -1,5 +1,6 @@
 #include "testApp.h"
 #include "ofxCv.h"
+#include "ofBitmapFont.h"
 
 void drawMarker(float size, const ofColor & color){
 	ofDrawAxis(size);
@@ -20,7 +21,7 @@ void drawMarker(float size, const ofColor & color){
 void testApp::setup(){
 	ofSetVerticalSync(true);
 	useVideo = false;
-	string boardName = "boardinfo.abc";
+	string boardName = "boardConfiguration.yml";
 
 	if(useVideo){
 		player.loadMovie("videoboard.mp4");
@@ -42,6 +43,10 @@ void testApp::setup(){
 	showBoardImage = false;
 
 	ofEnableAlphaBlending();
+
+	ofPixels pixels;
+	ofBitmapStringGetTextureRef().readToPixels(pixels);
+	ofSaveImage(pixels,"font.bmp");
 }
 
 //--------------------------------------------------------------

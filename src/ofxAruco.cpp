@@ -31,7 +31,7 @@ void ofxAruco::setup(string calibrationFile,float w, float h, string boardConfig
 	maxAge = 7;
 
 	double projMatrix[16];
-	aruco::MarkerDetector::glGetProjectionMatrix(camParams,size,size,projMatrix,0.05,10,false);
+	camParams.glGetProjectionMatrix(size,size,projMatrix,0.05,10,false);
 
 	for(int i=0;i<16;i++){
 		ofprojMatrix.getPtr()[i]=projMatrix[i];
@@ -53,7 +53,7 @@ void ofxAruco::setupXML(string calibrationXML,float w, float h, string boardConf
 	camParams.readFromXMLFile(ofToDataPath(calibrationXML));
 	camParams.resize(cv::Size(w,h));
 
-	aruco::MarkerDetector::glGetProjectionMatrix(camParams,size,size,projMatrix,0.05,10,false);
+	camParams.glGetProjectionMatrix(size,size,projMatrix,0.05,10,false);
 
 	for(int i=0;i<16;i++){
 		ofprojMatrix.getPtr()[i]=projMatrix[i];
@@ -188,7 +188,7 @@ void ofxAruco::draw(){
 	glMatrixMode( GL_PROJECTION );
 	glPushMatrix();
 
-	aruco::MarkerDetector::glGetProjectionMatrix(camParams,size,size,projMatrix,0.05,10,false);
+	camParams.glGetProjectionMatrix(size,size,projMatrix,0.05,10,false);
 
 	for(int i=0;i<16;i++){
 		ofprojMatrix.getPtr()[i]=projMatrix[i];
@@ -241,7 +241,7 @@ void ofxAruco::begin(int marker){
 	glMatrixMode( GL_PROJECTION );
 	glPushMatrix();
 
-	aruco::MarkerDetector::glGetProjectionMatrix(camParams,size,size,projMatrix,0.05,10,false);
+	camParams.glGetProjectionMatrix(size,size,projMatrix,0.05,10,false);
 
 	for(int i=0;i<16;i++){
 		ofprojMatrix.getPtr()[i]=projMatrix[i];
@@ -280,7 +280,7 @@ void ofxAruco::beginBoard(){
 	glMatrixMode( GL_PROJECTION );
 	glPushMatrix();
 
-	aruco::MarkerDetector::glGetProjectionMatrix(camParams,size,size,projMatrix,0.05,10,false);
+	camParams.glGetProjectionMatrix(size,size,projMatrix,0.05,10,false);
 
 	for(int i=0;i<16;i++){
 		ofprojMatrix.getPtr()[i]=projMatrix[i];
@@ -304,7 +304,7 @@ void ofxAruco::beginBoard(){
 }
 
 ofMatrix4x4 ofxAruco::getProjectionMatrix(){
-	aruco::MarkerDetector::glGetProjectionMatrix(camParams,size,size,projMatrix,0.05,10,false);
+	camParams.glGetProjectionMatrix(size,size,projMatrix,0.05,10,false);
 	for(int i=0;i<16;i++){
 		ofprojMatrix.getPtr()[i]=projMatrix[i];
 	}
@@ -352,13 +352,13 @@ ofQuaternion ofxAruco::getBoardRotation(){
 }
 
 void ofxAruco::getBoardImage(ofPixels & pixels){
-	cv::Mat m = aruco::Board::createBoardImage(boardConfig.size,boardConfig._markerSizePix,boardConfig._markerDistancePix,0,boardConfig);
-	pixels.setFromPixels(m.data,m.cols,m.rows,OF_IMAGE_GRAYSCALE);
+	/*cv::Mat m = aruco::Board::createBoardImage(boardConfig.size,boardConfig._markerSizePix,boardConfig._markerDistancePix,0,boardConfig);
+	pixels.setFromPixels(m.data,m.cols,m.rows,OF_IMAGE_GRAYSCALE);*/
 }
 
 void ofxAruco::getMarkerImage(int markerID, int size, ofPixels & pixels){
-	cv::Mat m = aruco::Marker::createMarkerImage(markerID,size);
-	pixels.setFromPixels(m.data,size,size,OF_IMAGE_GRAYSCALE);
+	/*cv::Mat m = aruco::Marker::createMarkerImage(markerID,size);
+	pixels.setFromPixels(m.data,size,size,OF_IMAGE_GRAYSCALE);*/
 }
 
 void ofxAruco::getThresholdImage(ofPixels & pixels){

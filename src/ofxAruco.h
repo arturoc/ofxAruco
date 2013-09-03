@@ -11,14 +11,17 @@
 #include "ofConstants.h"
 #include "ofPixels.h"
 #include "ofMatrix4x4.h"
+#include "ofThread.h"
 
 #include "boarddetector.h"
 #include "markerdetector.h"
+#include "Poco/Condition.h"
 
-class ofxAruco {
+class ofxAruco: public ofThread {
 public:
 	ofxAruco();
 
+	void setThreaded(bool threaded); // defaults to true
 	void setup(string calibrationFile,float w, float h, string boardConfig="", float markerSize=.15);
 	void setupXML(string calibrationXML,float w, float h, string boardConfig="", float markerSize=.15);
 
@@ -57,10 +60,24 @@ public:
 	aruco::BoardConfiguration & getBoardConfig();
 
 private:
+	void threadedFunction();
+	void findMarkers(ofPixels & pixels);
+	void findBoard(ofPixels & pixels);
+
+	ofPixels frontPixels, backPixels, intraPixels;
+	bool newDetectMarkers, newDetectBoard;
+	Poco::Condition condition;
+
 	aruco::MarkerDetector detector;
 	aruco::BoardDetector boardDetector;
 
-	vector<aruco::Marker> markers;
+	struct TrackedMarker{
+		aruco::Marker marker;
+		int age;
+	};
+	vector<aruco::Marker> markers,backMarkers,intraMarkers;
+	vector<TrackedMarker> prevMarkers;
+	int maxAge;
 	aruco::Board board;
 	aruco::BoardConfiguration boardConfig;
 	float boardProbability;
@@ -75,14 +92,10 @@ private:
 	ofMatrix4x4 ofprojMatrix;
 
 
-	struct TrackedMarker{
-		aruco::Marker marker;
-		int age;
-	};
 	aruco::Marker * findMarker(int id);
 	TrackedMarker * findTrackedMarker(int id);
-	vector<TrackedMarker> prevMarkers;
-	int maxAge;
+	bool threaded;
+	bool foundMarkers,foundBoard;
 };
 
 #endif /* OFXARUCO_H_ */

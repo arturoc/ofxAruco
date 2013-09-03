@@ -8,8 +8,15 @@
 #include "ofxAruco.h"
 #include "ofxCv.h"
 
-ofxAruco::ofxAruco() {
+ofxAruco::ofxAruco()
+:threaded(true)
+,newDetectMarkers(false)
+,newDetectBoard(false){
 
+}
+
+void ofxAruco::setThreaded(bool _threaded){
+	threaded = _threaded;
 }
 
 void ofxAruco::setup(string calibrationFile,float w, float h, string boardConfigFile, float _markerSize){
@@ -33,6 +40,8 @@ void ofxAruco::setup(string calibrationFile,float w, float h, string boardConfig
 	if(boardConfigFile!=""){
 		boardConfig.readFromFile(ofToDataPath(boardConfigFile));
 	}
+
+	if(threaded) startThread();
 }
 
 void ofxAruco::setupXML(string calibrationXML,float w, float h, string boardConfigFile, float _markerSize){
@@ -53,6 +62,8 @@ void ofxAruco::setupXML(string calibrationXML,float w, float h, string boardConf
 	if(boardConfigFile!=""){
 		boardConfig.readFromFile(ofToDataPath(boardConfigFile));
 	}
+
+	if(threaded) startThread();
 }
 
 aruco::BoardConfiguration & ofxAruco::getBoardConfig(){
@@ -79,12 +90,47 @@ ofxAruco::TrackedMarker * ofxAruco::findTrackedMarker(int id){
 }
 
 void ofxAruco::detectMarkers(ofPixels & pixels){
+	if(!threaded){
+		findMarkers(pixels);
+	}else{
+		lock();
+		frontPixels = pixels;
+		newDetectMarkers = true;
+
+		if(foundMarkers){
+			swap(markers,intraMarkers);
+			foundMarkers = false;
+		}
+		condition.signal();
+		unlock();
+	}
+}
+
+void ofxAruco::detectBoard(ofPixels & pixels){
+	if(!threaded){
+		findMarkers(pixels);
+	}else{
+		lock();
+		frontPixels = pixels;
+		newDetectBoard = true;
+
+		if(foundMarkers){
+			swap(markers,intraMarkers);
+			foundMarkers = false;
+		}
+		condition.signal();
+		unlock();
+	}
+}
+
+
+void ofxAruco::findMarkers(ofPixels & pixels){
 	cv::Mat mat = ofxCv::toCv(pixels);
-	detector.detect(mat,markers,camParams,markerSize);
+	detector.detect(mat,backMarkers,camParams,markerSize);
 
 	vector<vector<TrackedMarker>::iterator > toDelete;
 	vector<aruco::Marker > toAdd;
-	for(int i=0;i<prevMarkers.size();i++){
+	for(size_t i=0;i<prevMarkers.size();i++){
 		if(prevMarkers[i].age>maxAge){
 			toDelete.push_back(prevMarkers.begin()+i);
 			continue;
@@ -98,28 +144,44 @@ void ofxAruco::detectMarkers(ofPixels & pixels){
 		}
 	}
 
-	for(int i=0;i<toDelete.size();i++){
+	for(size_t i=0;i<toDelete.size();i++){
 		prevMarkers.erase(toDelete[i]);
 	}
 
-	for(int i=0;i<markers.size();i++){
-		TrackedMarker * marker = findTrackedMarker(markers[i].id);
+	for(size_t i=0;i<backMarkers.size();i++){
+		TrackedMarker * marker = findTrackedMarker(backMarkers[i].id);
 		if(!marker){
-			TrackedMarker tracked = {markers[i],0};
+			TrackedMarker tracked = {backMarkers[i],0};
 			prevMarkers.push_back(tracked);
 		}else{
-			marker->marker = markers[i];
+			marker->marker = backMarkers[i];
 		}
 	}
 
-	for(int i=0;i<toAdd.size();i++){
-		markers.push_back(toAdd[i]);
+	for(size_t i=0;i<toAdd.size();i++){
+		backMarkers.push_back(toAdd[i]);
 	}
+
+	if(threaded){
+		lock();
+		swap(backMarkers,intraMarkers);
+		foundMarkers = true;
+		unlock();
+	}else{
+		swap(backMarkers,markers);
+	}
+
 }
 
-void ofxAruco::detectBoard(ofPixels & pixels){
-	detectMarkers(pixels);
-	boardProbability = boardDetector.detect(markers,boardConfig,board,camParams,markerSize);
+void ofxAruco::findBoard(ofPixels & pixels){
+	findMarkers(pixels);
+	boardProbability = boardDetector.detect(backMarkers,boardConfig,board,camParams,markerSize);
+
+	if(threaded){
+		lock();
+		foundBoard = true;
+		unlock();
+	}
 }
 
 void ofxAruco::draw(){
@@ -324,3 +386,27 @@ void ofxAruco::setThresholdMethod(aruco::MarkerDetector::ThresholdMethods method
 	detector.setThresholdMethod(method);
 }
 
+void ofxAruco::threadedFunction(){
+	while(isThreadRunning()){
+		lock();
+		if(!newDetectBoard && !newDetectMarkers) condition.wait(mutex);
+		bool detectMarkers = false;
+		bool detectBoard = false;
+		if(newDetectMarkers || newDetectBoard){
+			swap(frontPixels, backPixels);
+			detectMarkers = newDetectMarkers;
+			detectBoard = newDetectBoard;
+
+			newDetectMarkers = false;
+			newDetectBoard = false;
+		}
+		unlock();
+
+		if(detectMarkers){
+			findMarkers(backPixels);
+		}
+		if(detectBoard){
+			findBoard(backPixels);
+		}
+	}
+}

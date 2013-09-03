@@ -31,6 +31,7 @@ void testApp::setup(){
 		video = &grabber;
 	}
 
+	//aruco.setThreaded(false);
 	aruco.setup("intrinsics.int", video->getWidth(), video->getHeight(), boardName);
 	aruco.getBoardImage(board.getPixelsRef());
 	board.update();

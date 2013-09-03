@@ -5,8 +5,8 @@
  *      Author: arturo
  */
 
-#include "ofxAruco.h"
 #include "ofxCv.h"
+#include "ofxAruco.h"
 
 ofxAruco::ofxAruco()
 :threaded(true)
@@ -352,7 +352,7 @@ ofQuaternion ofxAruco::getBoardRotation(){
 }
 
 void ofxAruco::getBoardImage(ofPixels & pixels){
-	cv::Mat m = aruco::Board::createBoardImage(Size(4,6),150,30,0,boardConfig);
+	cv::Mat m = aruco::Board::createBoardImage(boardConfig.size,boardConfig._markerSizePix,boardConfig._markerDistancePix,0,boardConfig);
 	pixels.setFromPixels(m.data,m.cols,m.rows,OF_IMAGE_GRAYSCALE);
 }
 

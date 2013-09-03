@@ -58,7 +58,7 @@ void MarkerDetector::detect(Mat &input,vector<Marker> &detectedMarkers,Mat camMa
     //pass a copy to findContours because the function modifies it
     thres.copyTo(thres2);
     cv::findContours( thres2 , contours2, hierarchy2,CV_RETR_TREE, CV_CHAIN_APPROX_NONE );
-    vector<Point>  approxCurve;
+    vector<cv::Point>  approxCurve;
     ///for each contour, analyze if it is a paralelepiped likely to be the marker
     for (unsigned int i=0;i<contours2.size();i++)
     {
@@ -165,7 +165,7 @@ void MarkerDetector::detect(Mat &input,vector<Marker> &detectedMarkers,Mat camMa
 //             MarkerCanditates[i].draw(input,cv::Scalar(0,255,0),1,false);
             //Find proyective homography
             Mat canonicalMarker;
-            warp(input,canonicalMarker,Size(50,50),MarkerCanditates[i]);
+            warp(input,canonicalMarker,cv::Size(50,50),MarkerCanditates[i]);
             int nRotations;
             int id=getMarkerId(canonicalMarker,nRotations);
             if (id!=-1)
@@ -273,7 +273,7 @@ void MarkerDetector::drawAllContours(Mat input)
  *
  *
  ************************************/
-void MarkerDetector:: drawContour(Mat &in,vector<Point>  &contour,Scalar color  )
+	void MarkerDetector:: drawContour(Mat &in,vector<cv::Point>  &contour,Scalar color  )
 {
     for (unsigned int i=0;i<contour.size();i++)
     {
@@ -281,7 +281,7 @@ void MarkerDetector:: drawContour(Mat &in,vector<Point>  &contour,Scalar color  
     }
 }
 
-void  MarkerDetector:: drawApproxCurve(Mat &in,vector<Point>  &contour,Scalar color  )
+	void  MarkerDetector:: drawApproxCurve(Mat &in,vector<cv::Point>  &contour,Scalar color  )
 {
     for (unsigned int i=0;i<contour.size();i++)
     {
@@ -312,7 +312,7 @@ void MarkerDetector::draw(Mat out,const vector<Marker> &markers )
  *
  ************************************/
 
-void MarkerDetector::warp(Mat &in,Mat &out,Size size, vector<Point2f> points)throw (cv::Exception)
+	void MarkerDetector::warp(Mat &in,Mat &out,cv::Size size, vector<Point2f> points)throw (cv::Exception)
 {
 
     if (points.size()!=4)    throw cv::Exception(9001,"point.size()!=4","PerpectiveWarper::warp",__FILE__,__LINE__);
@@ -496,7 +496,7 @@ int MarkerDetector::getMarkerId(Mat &in,int &nRotations)
         {
             int Xstart=(x)*(swidth);
             int Ystart=(y)*(swidth);
-            Mat square=grey(Rect(Xstart,Ystart,swidth,swidth));
+            Mat square=grey(cv::Rect(Xstart,Ystart,swidth,swidth));
             int nZ=countNonZero(square);
             if (nZ> (swidth*swidth) /2) {
                 return -1;//can not be a marker because the border element is not black!
@@ -516,7 +516,7 @@ int MarkerDetector::getMarkerId(Mat &in,int &nRotations)
         {
             int Xstart=(x+1)*(swidth);
             int Ystart=(y+1)*(swidth);
-            Mat square=grey(Rect(Xstart,Ystart,swidth,swidth));
+            Mat square=grey(cv::Rect(Xstart,Ystart,swidth,swidth));
             int nZ=countNonZero(square);
             if (nZ> (swidth*swidth) /2)  _bits.at<uchar>( y,x)=1;
         }
@@ -626,7 +626,7 @@ int MarkerDetector:: perimeter(vector<Point2f> &a)
 /**
  *
  */
-void MarkerDetector::glGetProjectionMatrix(CameraParameters & CP,Size orgImgSize,Size size,double proj_matrix[16],double gnear,double gfar,bool invert )throw(cv::Exception)
+	void MarkerDetector::glGetProjectionMatrix(CameraParameters & CP,cv::Size orgImgSize,cv::Size size,double proj_matrix[16],double gnear,double gfar,bool invert )throw(cv::Exception)
 {
       if (CP.isValid()==false) throw cv::Exception(9100,"invalid camera parameters","MarkerDetector::glGetProjectionMatrix",__FILE__,__LINE__);
     //Deterime the rsized info

@@ -294,7 +294,7 @@ void Marker::calculateExtrinsics(float markerSizeMeters,cv::Mat  camMatrix,cv::M
     //rotate the X axis so that Y is perpendicular to the marker plane
    if (setYPerperdicular) rotateXAxis(Rvec);
     ssize=markerSizeMeters; 
-    cout<<(*this)<<endl;
+    //cout<<(*this)<<endl;
     
 }
 

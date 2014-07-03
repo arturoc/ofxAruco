@@ -53,7 +53,7 @@ void testApp::setup(){
 void testApp::update(){
 	video->update();
 	if(video->isFrameNew()){
-		aruco.detectBoard(video->getPixelsRef());
+		aruco.detectBoards(video->getPixelsRef());
 	}
 }
 
@@ -74,9 +74,11 @@ void testApp::draw(){
 
 
 	if(showBoard && aruco.getBoardProbability()>0.03){
-		aruco.beginBoard();
-		drawMarker(.5,ofColor::red);
-		aruco.end();
+		for(int i=0;i<aruco.getNumBoards();i++){
+			aruco.beginBoard(i);
+			drawMarker(.5,ofColor::red);
+			aruco.end();
+		}
 	}
 	
 

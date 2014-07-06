@@ -119,7 +119,7 @@ void ofxAruco::detectMarkers(ofPixels & pixels){
 
 void ofxAruco::detectBoards(ofPixels & pixels){
 	if(!threaded){
-		findMarkers(pixels);
+		findBoards(pixels);
 	}else{
 		lock();
 		frontPixels = pixels;

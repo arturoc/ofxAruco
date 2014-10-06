@@ -24,7 +24,7 @@ public:
 	void setThreaded(bool threaded); // defaults to true
 	void setup(string calibrationFile,float w, float h, string boardConfig="", float markerSize=.15);
 	void setupXML(string calibrationXML,float w, float h, string boardConfig="", float markerSize=.15);
-	void setup(float w, float h, string boardConfig="", float markerSize=.15);
+	void setup2d(float w, float h, string boardConfig="", float markerSize=.15);
     
     void addBoardConf(string boardConfig="");
     

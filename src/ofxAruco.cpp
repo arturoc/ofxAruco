@@ -68,7 +68,7 @@ void ofxAruco::setupXML(string calibrationXML,float w, float h, string boardConf
 }
 
 //setup without calibration to work on 2d
-void ofxAruco::setup(float w, float h, string boardConfigFile, float _markerSize){
+void ofxAruco::setup2d(float w, float h, string boardConfigFile, float _markerSize){
 
 	size.width = w;
 	size.height = h;

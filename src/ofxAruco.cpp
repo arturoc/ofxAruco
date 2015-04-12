@@ -50,6 +50,7 @@ void ofxAruco::setupXML(string calibrationXML,float w, float h, string boardConf
 	size.height = h;
 	markerSize = _markerSize;
 	detector.setThresholdMethod(aruco::MarkerDetector::ADPT_THRES);
+	maxAge = 7;
     
 	camParams.readFromXMLFile(ofToDataPath(calibrationXML));
 	camParams.resize(cv::Size(w,h));

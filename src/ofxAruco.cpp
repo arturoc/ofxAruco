@@ -155,10 +155,12 @@ void ofxAruco::findMarkers(ofPixels & pixels){
 		}
 	}
     
-	for(size_t i=0;i<toDelete.size();i++){
+	/*for(size_t i=0;i<toDelete.size();i++){
+	prevMarkers.erase(toDelete[i]);
+	}*/
+	for (int i = toDelete.size() - 1; i >= 0; i--){
 		prevMarkers.erase(toDelete[i]);
 	}
-    
 	for(size_t i=0;i<backMarkers.size();i++){
 		TrackedMarker * marker = findTrackedMarker(backMarkers[i].idMarker);
 		if(!marker){

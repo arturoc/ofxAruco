@@ -24,14 +24,17 @@ public:
 	void setThreaded(bool threaded); // defaults to true
 	void setup(string calibrationFile,float w, float h, string boardConfig="", float markerSize=.15);
 	void setupXML(string calibrationXML,float w, float h, string boardConfig="", float markerSize=.15);
+	void setup2d(float w, float h, string boardConfig="", float markerSize=.15);
     
     void addBoardConf(string boardConfig="");
     
 	void detectMarkers(ofPixels & pixels);
 	void detectBoards(ofPixels & pixels);
-    
+
 	void draw();
-    
+  void draw3d();
+  void draw2d();
+
 	vector<aruco::Marker> & getMarkers();
     //    bgraf
     //	aruco::Board & getBoard();
@@ -106,8 +109,7 @@ private:
     
 	double projMatrix[16];
 	float projfMatrix[16];
-	ofMatrix4x4 ofprojMatrix;
-    
+	ofMatrix4x4 ofprojMatrix; 
     
 	aruco::Marker * findMarker(int id);
 	TrackedMarker * findTrackedMarker(int id);

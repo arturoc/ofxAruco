@@ -1,4 +1,4 @@
-#include "testApp.h"
+#include "ofApp.h"
 #include "ofxCv.h"
 #include "ofBitmapFont.h"
 
@@ -18,7 +18,7 @@ void drawMarker(float size, const ofColor & color){
 }
 
 //--------------------------------------------------------------
-void testApp::setup(){
+void ofApp::setup(){
 	ofSetVerticalSync(true);
 	useVideo = false;
 	string boardName = "boardConfiguration.yml";
@@ -28,7 +28,7 @@ void testApp::setup(){
 		player.play();
 		video = &player;
 	}else{
-		grabber.setDeviceID(1);
+    //grabber.setDeviceID(1);
 		grabber.initGrabber(640,480);
 		video = &grabber;
 	}
@@ -50,7 +50,7 @@ void testApp::setup(){
 }
 
 //--------------------------------------------------------------
-void testApp::update(){
+void ofApp::update(){
 	video->update();
 	if(video->isFrameNew()){
 		aruco.detectBoards(video->getPixelsRef());
@@ -58,7 +58,7 @@ void testApp::update(){
 }
 
 //--------------------------------------------------------------
-void testApp::draw(){
+void ofApp::draw(){
 	ofSetColor(255);
 	video->draw(0,0);
 
@@ -96,7 +96,7 @@ void testApp::draw(){
 }
 
 //--------------------------------------------------------------
-void testApp::keyPressed(int key){
+void ofApp::keyPressed(int key){
 	if(key=='m') showMarkers = !showMarkers;
 	if(key=='b') showBoard = !showBoard;
 	if(key=='i') showBoardImage = !showBoardImage;
@@ -110,41 +110,41 @@ void testApp::keyPressed(int key){
 }
 
 //--------------------------------------------------------------
-void testApp::keyReleased(int key){
+void ofApp::keyReleased(int key){
 
 }
 
 //--------------------------------------------------------------
-void testApp::mouseMoved(int x, int y ){
+void ofApp::mouseMoved(int x, int y ){
 
 }
 
 //--------------------------------------------------------------
-void testApp::mouseDragged(int x, int y, int button){
+void ofApp::mouseDragged(int x, int y, int button){
 
 }
 
 //--------------------------------------------------------------
-void testApp::mousePressed(int x, int y, int button){
+void ofApp::mousePressed(int x, int y, int button){
 
 }
 
 //--------------------------------------------------------------
-void testApp::mouseReleased(int x, int y, int button){
+void ofApp::mouseReleased(int x, int y, int button){
 
 }
 
 //--------------------------------------------------------------
-void testApp::windowResized(int w, int h){
+void ofApp::windowResized(int w, int h){
 
 }
 
 //--------------------------------------------------------------
-void testApp::gotMessage(ofMessage msg){
+void ofApp::gotMessage(ofMessage msg){
 
 }
 
 //--------------------------------------------------------------
-void testApp::dragEvent(ofDragInfo dragInfo){ 
+void ofApp::dragEvent(ofDragInfo dragInfo){ 
 
 }

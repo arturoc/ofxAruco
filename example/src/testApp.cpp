@@ -44,9 +44,6 @@ void testApp::setup(){
 
 	ofEnableAlphaBlending();
 
-	ofPixels pixels;
-	ofTexture().readToPixels(pixels);
-	ofSaveImage(pixels,"font.bmp");
 }
 
 //--------------------------------------------------------------

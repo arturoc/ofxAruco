@@ -45,7 +45,7 @@ void testApp::setup(){
 	ofEnableAlphaBlending();
 
 	ofPixels pixels;
-	ofBitmapStringGetTextureRef().readToPixels(pixels);
+	ofTexture().readToPixels(pixels);
 	ofSaveImage(pixels,"font.bmp");
 }
 
@@ -53,7 +53,7 @@ void testApp::setup(){
 void testApp::update(){
 	video->update();
 	if(video->isFrameNew()){
-		aruco.detectBoards(video->getPixelsRef());
+		aruco.detectBoards(video->getPixels());
 	}
 }
 

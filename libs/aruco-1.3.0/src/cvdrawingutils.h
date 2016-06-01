@@ -29,24 +29,19 @@ or implied, of Rafael Muñoz Salinas.
 #define _ArUco_DrawUtils_H_
 #include "exports.h"
 #include "aruco.h"
-namespace aruco
-{
-  /**\brief A set of functions to draw in opencv images
-   */
-  class  ARUCO_EXPORTS CvDrawingUtils
-  {
+namespace aruco {
+/**\brief A set of functions to draw in opencv images
+ */
+class ARUCO_EXPORTS CvDrawingUtils {
   public:
-    
-    static void draw3dAxis(cv::Mat &Image,Marker &m,const CameraParameters &CP);
-    
-    static void draw3dCube(cv::Mat &Image,Marker &m,const CameraParameters &CP);
-    
-    static void draw3dAxis(cv::Mat &Image,Board &m,const CameraParameters &CP);
-    
-    static void draw3dCube(cv::Mat &Image,Board &m,const CameraParameters &CP);
+    static void draw3dAxis(cv::Mat &Image, Marker &m, const CameraParameters &CP);
 
-  };
+    static void draw3dCube(cv::Mat &Image, Marker &m, const CameraParameters &CP, bool setYperpendicular = false);
+
+    static void draw3dAxis(cv::Mat &Image, Board &m, const CameraParameters &CP);
+
+    static void draw3dCube(cv::Mat &Image, Board &m, const CameraParameters &CP, bool setYperpendicular = false);
+};
 };
 
 #endif
-

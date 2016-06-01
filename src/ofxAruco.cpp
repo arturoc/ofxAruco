@@ -83,7 +83,7 @@ vector<aruco::BoardConfiguration> & ofxAruco::getBoardConfigs(){
 
 aruco::Marker * ofxAruco::findMarker(int id){
 	for(size_t i=0;i<backMarkers.size();i++){
-		if(backMarkers[i].idMarker==id){
+		if(backMarkers[i].id==id){
 			return &backMarkers[i];
 		}
 	}
@@ -93,7 +93,7 @@ aruco::Marker * ofxAruco::findMarker(int id){
 
 ofxAruco::TrackedMarker * ofxAruco::findTrackedMarker(int id){
 	for(size_t i=0;i<prevMarkers.size();i++){
-		if(prevMarkers[i].marker.idMarker==id){
+		if(prevMarkers[i].marker.id==id){
 			return &prevMarkers[i];
 		}
 	}
@@ -146,7 +146,7 @@ void ofxAruco::findMarkers(ofPixels & pixels){
 			toDelete.push_back(prevMarkers.begin()+i);
 			continue;
 		}
-		aruco::Marker * prev = findMarker(prevMarkers[i].marker.idMarker);
+		aruco::Marker * prev = findMarker(prevMarkers[i].marker.id);
 		if(!prev){
 			prevMarkers[i].age++;
 			toAdd.push_back(prevMarkers[i].marker);
@@ -162,7 +162,7 @@ void ofxAruco::findMarkers(ofPixels & pixels){
 		prevMarkers.erase(toDelete[i]);
 	}
 	for(size_t i=0;i<backMarkers.size();i++){
-		TrackedMarker * marker = findTrackedMarker(backMarkers[i].idMarker);
+		TrackedMarker * marker = findTrackedMarker(backMarkers[i].id);
 		if(!marker){
 			TrackedMarker tracked = {backMarkers[i],0};
 			prevMarkers.push_back(tracked);
@@ -188,7 +188,7 @@ void ofxAruco::findMarkers(ofPixels & pixels){
 
 void ofxAruco::findBoards(ofPixels & pixels){
 	findMarkers(pixels);
-    for (int i = 0; i < boardConfigs.size(); i++) {
+	for (unsigned int i = 0; i < boardConfigs.size(); i++) {
         aruco::BoardConfiguration boardConfig = boardConfigs[i];
         aruco::Board board = boards[i];
         boardProbabilities[i] = boardDetector.detect(backMarkers,boardConfig,board,camParams,markerSize);
@@ -259,7 +259,7 @@ int ofxAruco::getNumBoards() {
 
 float ofxAruco::getBoardProbability(){
     float prop = 0.f;
-    for(int i = 0; i < boardProbabilities.size(); i++) {
+	for(unsigned int i = 0; i < boardProbabilities.size(); i++) {
         prop += boardProbabilities[i];
     }
 	return prop;

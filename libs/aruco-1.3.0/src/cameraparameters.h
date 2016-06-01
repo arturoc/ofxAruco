@@ -26,73 +26,70 @@ authors and should not be interpreted as representing official policies, either 
 or implied, of Rafael Muñoz Salinas.
 ********************************/
 #ifndef _Aruco_CameraParameters_H
-#define  _Aruco_CameraParameters_H
+#define _Aruco_CameraParameters_H
 #include "exports.h"
-#include <opencv2/opencv.hpp>
+#include <opencv2/core/core.hpp>
 #include <string>
 using namespace std;
-namespace aruco
-{
+namespace aruco {
 /**\brief Parameters of the camera
  */
 
-class ARUCO_EXPORTS  CameraParameters
-{
-public:
-
+class ARUCO_EXPORTS CameraParameters {
+  public:
     // 3x3 matrix (fx 0 cx, 0 fy cy, 0 0 1)
-    cv::Mat  CameraMatrix;
-    //4x1 matrix (k1,k2,p1,p2)
-    cv::Mat  Distorsion;
-    //size of the image
+    cv::Mat CameraMatrix;
+    // 4x1 matrix (k1,k2,p1,p2)
+    cv::Mat Distorsion;
+    // size of the image
     cv::Size CamSize;
 
     /**Empty constructor
      */
-    CameraParameters() ;
+    CameraParameters();
     /**Creates the object from the info passed
      * @param cameraMatrix 3x3 matrix (fx 0 cx, 0 fy cy, 0 0 1)
      * @param distorsionCoeff 4x1 matrix (k1,k2,p1,p2)
      * @param size image size
      */
-    CameraParameters(cv::Mat cameraMatrix,cv::Mat distorsionCoeff,cv::Size size) throw(cv::Exception);
+    CameraParameters(cv::Mat cameraMatrix, cv::Mat distorsionCoeff, cv::Size size) throw(cv::Exception);
     /**Sets the parameters
      * @param cameraMatrix 3x3 matrix (fx 0 cx, 0 fy cy, 0 0 1)
      * @param distorsionCoeff 4x1 matrix (k1,k2,p1,p2)
      * @param size image size
      */
-    void setParams(cv::Mat cameraMatrix,cv::Mat distorsionCoeff,cv::Size size) throw(cv::Exception);
+    void setParams(cv::Mat cameraMatrix, cv::Mat distorsionCoeff, cv::Size size) throw(cv::Exception);
     /**Copy constructor
      */
-    CameraParameters(const CameraParameters &CI) ;
+    CameraParameters(const CameraParameters &CI);
 
     /**Indicates whether this object is valid
      */
-    bool isValid()const {
-        return CameraMatrix.rows!=0 && CameraMatrix.cols!=0  && Distorsion.rows!=0 && Distorsion.cols!=0 && CamSize.width!=-1 && CamSize.height!=-1;
+    bool isValid() const {
+        return CameraMatrix.rows != 0 && CameraMatrix.cols != 0 && Distorsion.rows != 0 && Distorsion.cols != 0 && CamSize.width != -1 && CamSize.height != -1;
     }
     /**Assign operator
     */
-    CameraParameters & operator=(const CameraParameters &CI);
+    CameraParameters &operator=(const CameraParameters &CI);
     /**Reads the camera parameters from a file generated using saveToFile.
      */
-    void readFromFile(string path)throw(cv::Exception);
+    void readFromFile(string path) throw(cv::Exception);
     /**Saves this to a file
      */
-    void saveToFile(string path,bool inXML=true)throw(cv::Exception);
+    void saveToFile(string path, bool inXML = true) throw(cv::Exception);
 
     /**Reads from a YAML file generated with the opencv2.2 calibration utility
      */
-    void readFromXMLFile(string filePath)throw(cv::Exception);
+    void readFromXMLFile(string filePath) throw(cv::Exception);
 
     /**Adjust the parameters to the size of the image indicated
      */
-    void resize(cv::Size size)throw(cv::Exception);
+    void resize(cv::Size size) throw(cv::Exception);
 
     /**Returns the location of the camera in the reference system given by the rotation and translation vectors passed
      * NOT TESTED
     */
-    static cv::Point3f getCameraLocation(cv::Mat Rvec,cv::Mat Tvec);
+    static cv::Point3f getCameraLocation(cv::Mat Rvec, cv::Mat Tvec);
 
     /**Given the intrinsic camera parameters returns the GL_PROJECTION matrix for opengl.
     * PLease NOTE that when using OpenGL, it is assumed no camera distorsion! So, if it is not true, you should have
@@ -102,10 +99,11 @@ public:
     * @param size of the image/window where to render (can be different from the real camera image). Please not that it must be related to CamMatrix
     * @param proj_matrix output projection matrix to give to opengl
     * @param gnear,gfar: visible rendering range
-    * @param invert: indicates if the output projection matrix has to yield a horizontally inverted image because image data has not been stored in the order of glDrawPixels: bottom-to-top.
+    * @param invert: indicates if the output projection matrix has to yield a horizontally inverted image because image data has not been stored in the order of
+    *glDrawPixels: bottom-to-top.
     */
-    void glGetProjectionMatrix( cv::Size orgImgSize, cv::Size size,double proj_matrix[16],double gnear,double gfar,bool invert=false   )throw(cv::Exception);
-    
+    void glGetProjectionMatrix(cv::Size orgImgSize, cv::Size size, double proj_matrix[16], double gnear, double gfar, bool invert = false) throw(cv::Exception);
+
     /**
      * setup camera for an Ogre project.
      * 	Use:
@@ -116,22 +114,21 @@ public:
      * ...
      * As in OpenGL, it assumes no camera distorsion
      */
-    void OgreGetProjectionMatrix( cv::Size orgImgSize, cv::Size size,double proj_matrix[16],double gnear,double gfar,bool invert=false   )throw(cv::Exception);
-    
-
-private:
-    //GL routines
-
-    static void argConvGLcpara2( double cparam[3][4], int width, int height, double gnear, double gfar, double m[16], bool invert )throw(cv::Exception);
-    static int  arParamDecompMat( double source[3][4], double cpara[3][4], double trans[3][4] )throw(cv::Exception);
-    static double norm( double a, double b, double c );
-    static double dot(  double a1, double a2, double a3,
-                        double b1, double b2, double b3 );
+    void OgreGetProjectionMatrix(cv::Size orgImgSize, cv::Size size, double proj_matrix[16], double gnear, double gfar,
+                                 bool invert = false) throw(cv::Exception);
 
 
+    /**Returns the 4x4 homogeneous transform matrix from the R and T vectors computed
+     */
+    static cv::Mat getRTMatrix(const cv::Mat &R_, const cv::Mat &T_, int forceType);
+
+  private:
+    // GL routines
+
+    static void argConvGLcpara2(double cparam[3][4], int width, int height, double gnear, double gfar, double m[16], bool invert) throw(cv::Exception);
+    static int arParamDecompMat(double source[3][4], double cpara[3][4], double trans[3][4]) throw(cv::Exception);
+    static double norm(double a, double b, double c);
+    static double dot(double a1, double a2, double a3, double b1, double b2, double b3);
 };
-
 }
 #endif
-
-

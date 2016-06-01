@@ -55,7 +55,7 @@ do not want to use chessboards, disable it.
 
 \subsection APPLICATIONS
 
-- The library comes with five applications that will help you to learn how to use the library:
+- The library comes with several applications that will help you to learn how to use the library:
  -# aruco_create_marker: which creates marker and saves it in a jpg file you can print.
  -# aruco_simple : simple test aplication that detects the markers in an image
  -# aruco_test: this is the main application for detection. It reads images either from the camera of from a video and detect markers. Additionally, if you provide the intrinsics of the camera(obtained by OpenCv calibration) and the size of the marker in meters, the library calculates the marker intrinsics so that you can easily create your AR applications.
@@ -66,9 +66,21 @@ do not want to use chessboards, disable it.
  -# aruco_simple_board: simple application that detects boards in an image
  -# aruco_test_board_gl: application that detects boards and uses OpenGL to draw
  
+ 
+\subsection HIGHLY RELIABLE MARKERS
+After version 1.2.5, ArUco includes a new type of marker codification know as Highly Reliable Markers (hrm). The main benefits are: (i) number of markers and marker size is customizable by the user and (ii) error correction can be applied. 
+For more details, see "S. Garrido-Jurado, R. Muñoz-Salinas, F.J. Madrid-Cuevas, M.J. Marín-Jiménez, Automatic generation and detection of highly reliable fiducial markers under occlusion, Pattern Recognition, Volume 47, Issue 6, June 2014"
+The 'utils_hrm' folder contains some applications to test these markers
+ -# aruco_hrm_create_dictionary: creates customized dictionary of highly reliable markers
+ -# aruco_hrm_test: basic application for single marker detection
+ -# aruco_hrm_create_board: create a board of hrm markers, it can also create chromatic boards for occlusion map (see paper for more information)
+ -# aruco_hrm_test_board: detect board. If use chromatic board it can also generate occlusion mask
+
+
+ 
 \section COMPILING THE LIBRARY:
 
- REQUIREMENTS: OpenCv >= 2.3.1, cmake >= 2.8
+ REQUIREMENTS: OpenCv >= 2.4.9, cmake >= 2.8
  OPTIONAL:   OpenGL for aruco_test_gl and aruco_test_board_gl
 
 \subsection LINUX:

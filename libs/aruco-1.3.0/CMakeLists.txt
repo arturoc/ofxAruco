@@ -4,7 +4,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 PROJECT(aruco)
-set(PROJECT_VERSION "1.2.3")
+set(PROJECT_VERSION "1.3.0")
 string(REGEX MATCHALL "[0-9]" PROJECT_VERSION_PARTS "${PROJECT_VERSION}")
 list(GET PROJECT_VERSION_PARTS 0 PROJECT_VERSION_MAJOR)
 list(GET PROJECT_VERSION_PARTS 1 PROJECT_VERSION_MINOR)
@@ -26,18 +26,21 @@ ENDIF()
 
 if(WIN32)
     # Postfix of DLLs:
+    # Postfix of DLLs:
     SET(PROJECT_DLLVERSION "${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR}${PROJECT_VERSION_PATCH}")
-    SET(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}")
     SET(RUNTIME_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directory for dlls and binaries")
     SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directory for binaries")
     SET(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin CACHE PATH "Directory for dlls")
+
+    OPTION(BUILD_GLSAMPLES 	"Set to OFF to build static libraries" OFF)
 else()
     # Postfix of so's:
-    set(PROJECT_DLLVERSION)
-    SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_INSTALL_PREFIX}/lib/cmake/ /usr/lib/cmake)
+    set(PROJECT_DLLVERSION)   
+    OPTION(BUILD_GLSAMPLES 	"Set to OFF to build static libraries" ON)
+#    SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_INSTALL_PREFIX}/lib/cmake/ /usr/lib/cmake)
 endif()
 
-
+OPTION(BUILD_UTILS	"Set to OFF to not compile utils " ON)
 OPTION(BUILD_SHARED_LIBS 	"Set to OFF to build static libraries" ON)
 
 # ----------------------------------------------------------------------------
@@ -46,6 +49,14 @@ OPTION(BUILD_SHARED_LIBS 	"Set to OFF to build static libraries" ON)
 
 FIND_PACKAGE(OpenCV 	REQUIRED )
 set (REQUIRED_LIBRARIES ${OpenCV_LIBS})
+INCLUDE_DIRECTORIES(${OpenCV_INCLUDE_DIRS})
+
+# Check if we have OpenCV 3
+string(REPLACE "." ";" OPENCV_VERSION_LIST ${OpenCV_VERSION})
+list(GET OPENCV_VERSION_LIST 0 OPENCV_VERSION_MAJOR)
+IF( ${OPENCV_VERSION_MAJOR} STREQUAL "3" )
+    ADD_DEFINITIONS(-DOPENCV_VERSION_3)
+ENDIF()
 
 
 IF(EXISTS ${GLUT_PATH})
@@ -56,10 +67,11 @@ ENDIF()
 ##LOOK FOR OPENGL AND GLUT
 #FIND OPENGL LIBRARY. In Android, there is no need since it is included
 IF(NOT ANDROID_CREATION)
+if(BUILD_GLSAMPLES)
   find_package(OpenGL)
   find_package(GLUT)#standard package
-
   MESSAGE(STATUS "GLUT_FOUND=${GLUT_FOUND} OPENGL_gl_LIBRARY=${OPENGL_gl_LIBRARY} GLUT_HEADER=${GLUT_HEADER}")
+endif()
   IF(NOT GLUT_FOUND) #else, freeglut
     FIND_LIBRARY(GLUT_glut_LIBRARY     NAMES freeglut)
     MESSAGE(STATUS "GLUT_glut_LIBRARY=${GLUT_glut_LIBRARY}")
@@ -70,6 +82,19 @@ IF(NOT ANDROID_CREATION)
     set(GL_FOUND "YES")
     set (OPENGL_LIBS  ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${GLUT_glut_LIBRARY})
   ENDIF()
+ENDIF()
+#Omp
+
+
+if(WIN32)
+ 
+ELSE()
+find_package(OpenMP  )
+if (OPENMP_FOUND)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+add_definitions(-DUSE_OMP)
+endif()
 ENDIF()
 
 # ----------------------------------------------------------------------------
@@ -250,8 +275,9 @@ ENDIF()
 # DIRS
 #------------------------------------------------
 ADD_SUBDIRECTORY(src)
-IF(NOT ANDROID_CREATION)
+IF(BUILD_UTILS)
   ADD_SUBDIRECTORY(utils)
+  ADD_SUBDIRECTORY(utils_hrm)
 ENDIF()
 
 
@@ -293,3 +319,8 @@ MESSAGE( STATUS )
 MESSAGE( STATUS )
 MESSAGE( STATUS "Change a value with: cmake -D<Variable>=<Value>" )
 MESSAGE( STATUS )
+
+# pkg-config
+configure_file(aruco.pc.in aruco.pc @ONLY)
+configure_file(aruco-uninstalled.pc.in aruco-uninstalled.pc @ONLY)
+install(FILES "${PROJECT_BINARY_DIR}/aruco-uninstalled.pc" "${PROJECT_BINARY_DIR}/aruco.pc" DESTINATION lib/pkgconfig)

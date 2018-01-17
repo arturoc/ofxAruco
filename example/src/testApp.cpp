@@ -5,15 +5,15 @@
 void drawMarker(float size, const ofColor & color){
 	ofDrawAxis(size);
 	ofPushMatrix();
-	    // move up from the center by size*.5
-	    // to draw a box centered at that point
+		// move up from the center by size*.5
+		// to draw a box centered at that point
 		ofTranslate(0,size*0.5,0);
 		ofFill();
 		ofSetColor(color,50);
-		ofBox(size);
+		ofDrawBox(size);
 		ofNoFill();
 		ofSetColor(color);
-		ofBox(size);
+		ofDrawBox(size);
 	ofPopMatrix();
 }
 
@@ -24,7 +24,7 @@ void testApp::setup(){
 	string boardName = "boardConfiguration.yml";
 
 	if(useVideo){
-		player.loadMovie("videoboard.mp4");
+		player.load("videoboard.mp4");
 		player.play();
 		video = &player;
 	}else{
@@ -35,7 +35,7 @@ void testApp::setup(){
 
 	//aruco.setThreaded(false);
 	aruco.setup("intrinsics.int", video->getWidth(), video->getHeight(), boardName);
-	aruco.getBoardImage(board.getPixelsRef());
+	aruco.getBoardImage(board.getPixels());
 	board.update();
 
 	showMarkers = true;
@@ -44,16 +44,13 @@ void testApp::setup(){
 
 	ofEnableAlphaBlending();
 
-	ofPixels pixels;
-	ofBitmapStringGetTextureRef().readToPixels(pixels);
-	ofSaveImage(pixels,"font.bmp");
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
 	video->update();
 	if(video->isFrameNew()){
-		aruco.detectBoards(video->getPixelsRef());
+		aruco.detectBoards(video->getPixels());
 	}
 }
 
@@ -80,12 +77,12 @@ void testApp::draw(){
 			aruco.end();
 		}
 	}
-	
+
 
 	ofSetColor(255);
 	if(showBoardImage){
-    	board.draw(ofGetWidth()-320,0,320,320*float(board.getHeight())/float(board.getWidth()));
-    }
+		board.draw(ofGetWidth()-320,0,320,320*float(board.getHeight())/float(board.getWidth()));
+	}
 	ofDrawBitmapString("markers detected: " + ofToString(aruco.getNumMarkers()),20,20);
 	ofDrawBitmapString("fps " + ofToString(ofGetFrameRate()),20,40);
 	ofDrawBitmapString("m toggles markers",20,60);
@@ -100,12 +97,12 @@ void testApp::keyPressed(int key){
 	if(key=='m') showMarkers = !showMarkers;
 	if(key=='b') showBoard = !showBoard;
 	if(key=='i') showBoardImage = !showBoardImage;
-	if(key=='s') board.saveImage("boardimage.png");
+	if(key=='s') board.save("boardimage.png");
 	if(key>='0' && key<='9'){
-	    // there's 1024 different markers
-	    int markerID = key - '0';
-	    aruco.getMarkerImage(markerID,240,marker);
-	    marker.saveImage("marker"+ofToString(markerID)+".png");
+		// there's 1024 different markers
+		int markerID = key - '0';
+		aruco.getMarkerImage(markerID,240,marker);
+		marker.save("marker"+ofToString(markerID)+".png");
 	}
 }
 
@@ -145,6 +142,6 @@ void testApp::gotMessage(ofMessage msg){
 }
 
 //--------------------------------------------------------------
-void testApp::dragEvent(ofDragInfo dragInfo){ 
+void testApp::dragEvent(ofDragInfo dragInfo){
 
 }

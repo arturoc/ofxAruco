@@ -2,8 +2,9 @@
 
 #include "ofMain.h"
 #include "ofxAruco.h"
+#include "highlyreliablemarkers.h"
 
-class testApp : public ofBaseApp{
+class ofApp : public ofBaseApp{
 
 	public:
 		void setup();
@@ -20,16 +21,16 @@ class testApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 		
-		ofVideoGrabber grabber;
-		ofVideoPlayer player;
+		void createMarker(unsigned int dictSize, unsigned int n);
+		void createMarkerImages(aruco::Dictionary& dictionary);
 
-		ofBaseVideoDraws * video;
+private:
+	aruco::Dictionary dictionary;
 
-		ofxAruco aruco;
-		bool useVideo;
-		bool showMarkers;
-		bool showBoard;
-		bool showBoardImage;
-		ofImage board;
-		ofImage marker;
+	int dictionarySize{ 32 };
+	int markerResolution{ 4 };
+	int tau;
+
+	int state{ 0 };
+	bool stateDrawn{ false };
 };

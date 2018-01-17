@@ -50,6 +50,8 @@ void ofxAruco::setupXML(string calibrationXML,float w, float h, string boardConf
 	size.height = h;
 	markerSize = _markerSize;
 	detector.setThresholdMethod(aruco::MarkerDetector::ADPT_THRES);
+	
+	
 
 	camParams.readFromXMLFile(ofToDataPath(calibrationXML));
 	camParams.resize(cv::Size(w,h));
@@ -65,6 +67,29 @@ void ofxAruco::setupXML(string calibrationXML,float w, float h, string boardConf
 	addBoardConf(boardConfigFile);
 
 	if(threaded) startThread();
+}
+
+void ofxAruco::setUseHighlyReliableMarker(string dictionaryFile)
+{
+	//load dictionary
+	aruco::Dictionary D;
+	string path = ofFilePath::getAbsolutePath(dictionaryFile);
+	if (D.fromFile(path) == false) {
+		cerr << "Could not open dictionary" << endl;
+	};
+
+	if (D.size() == 0) {
+		cerr << "Invalid dictionary" << endl;
+	};
+
+	aruco::HighlyReliableMarkers::loadDictionary(D);
+
+	//setup parameters
+	detector.enableLockedCornersMethod(false);
+	detector.setMarkerDetectorFunction(aruco::HighlyReliableMarkers::detect);
+	detector.setThresholdParams(21, 7);
+	detector.setCornerRefinementMethod(aruco::MarkerDetector::LINES);
+	detector.setWarpSize((D[0].n() + 2) * 8);
 }
 
 void ofxAruco::addBoardConf(string boardConfigFile) {
@@ -237,6 +262,16 @@ void ofxAruco::draw(){
 	glPopMatrix();
 
 	glMatrixMode( GL_MODELVIEW );
+}
+
+void ofxAruco::setMinMaxMarkerDetectionSize(float minSize, float maxSize)
+{
+	detector.setMinMaxSize(minSize, maxSize);
+}
+
+void ofxAruco::setMarkerSize(float markerSize_)
+{
+	markerSize = markerSize_;
 }
 
 vector<aruco::Marker> & ofxAruco::getMarkers(){

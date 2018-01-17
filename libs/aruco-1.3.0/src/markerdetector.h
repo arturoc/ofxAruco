@@ -229,7 +229,7 @@ class ARUCO_EXPORTS MarkerDetector {
      *id otherwise.
      *
      */
-    void setMakerDetectorFunction(int (*markerdetector_func)(const cv::Mat &in, int &nRotations)) { markerIdDetector_ptrfunc = markerdetector_func; }
+    void setMarkerDetectorFunction(int (*markerdetector_func)(const cv::Mat &in, int &nRotations)) { markerIdDetector_ptrfunc = markerdetector_func; }
 
     /**Deprecated
      *

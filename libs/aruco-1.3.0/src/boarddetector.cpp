@@ -102,7 +102,7 @@ float BoardDetector::detect(const vector< Marker > &detectedMarkers, const Board
         ssize = cv::norm(BConf[0][0] - BConf[0][1]);
     }
 
-    // cout<<"markerSizeMeters="<<markerSizeMeters<<endl;
+     //cout<<"markerSizeMeters="<<markerSizeMeters<<endl;
     Bdetected.clear();
     /// find among detected markers these that belong to the board configuration
     for (unsigned int i = 0; i < detectedMarkers.size(); i++) {

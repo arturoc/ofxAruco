@@ -8,6 +8,7 @@
 #ifndef OFXARUCO_H_
 #define OFXARUCO_H_
 
+
 #include "ofConstants.h"
 #include "ofPixels.h"
 #include "ofMatrix4x4.h"
@@ -15,6 +16,7 @@
 
 #include "boarddetector.h"
 #include "markerdetector.h"
+#include "highlyreliablemarkers.h"
 #include "Poco/Condition.h"
 
 class ofxAruco: public ofThread {
@@ -24,6 +26,8 @@ public:
 	void setThreaded(bool threaded); // defaults to true
 	void setup(string calibrationFile,float w, float h, string boardConfig="", float markerSize=.15);
 	void setupXML(string calibrationXML,float w, float h, string boardConfig="", float markerSize=.15);
+
+	void setUseHighlyReliableMarker(string dictionaryFile);
     
     void addBoardConf(string boardConfig="");
     
@@ -31,6 +35,9 @@ public:
 	void detectBoards(ofPixels & pixels);
     
 	void draw();
+
+	
+
     
 	vector<aruco::Marker> & getMarkers();
     //    bgraf
@@ -64,6 +71,11 @@ public:
 	double getThresholdParam2();
 	void setThresholdParams(double param1, double param2);
 	void setThresholdMethod(aruco::MarkerDetector::ThresholdMethods method);
+
+	void setMinMaxMarkerDetectionSize(float minSize, float maxSize); //the detection size of a marker in fraction of camera width
+	void setMarkerSize(float markerSizeInMeter); 
+	
+
     
     // bgraf
     //	aruco::BoardConfiguration & getBoardConfig();

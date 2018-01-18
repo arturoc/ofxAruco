@@ -1,1 +1,5 @@
-*.DS_*
+*.DS_* 
+example/bin/example*
+example/obj
+example/bin/libs
+example/*.creator*

@@ -150,4 +150,6 @@ information on how to run the examples.
 #include "boarddetector.h"
 #include "cvdrawingutils.h"
 
-#define OPENCV_VERSION_3
+#if CV_MAJOR_VERSION >= 3
+	#define OPENCV_VERSION_3
+#endif
